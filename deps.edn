@@ -1,0 +1,7 @@
+{:deps {compojure/compojure {:mvn/version "1.7.1"}
+        ring/ring-defaults {:mvn/version "0.4.0"}
+        ring/ring-jetty-adapter {:mvn/version "1.12.1"}
+        org.clojure/clojure {:mvn/version "1.11.2"}}
+
+ :aliases {:dev {:extra-paths ["dev"]
+                 :extra-deps {ring/ring-devel {:mvn/version "1.12.1"}}}}}
