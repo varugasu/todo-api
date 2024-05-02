@@ -13,5 +13,5 @@
     (reset! server nil)))
 
 (defn start []
-  (if (nil? @server)
+  (when (nil? @server)
     (reset! server (run-jetty dev-app {:port 3000 :join? false}))))
