@@ -1,12 +1,14 @@
-(ns api  (:require [compojure.core :refer  [GET POST routes]]
+(ns api  (:require [cheshire.core :refer [generate-string parse-stream]]
+                   [clojure.java.io]
+                   [compojure.core :refer  [GET POST routes]]
                    [compojure.route :as route]
-                   [ring.middleware.defaults :refer [wrap-defaults api-defaults]]
                    [ring.adapter.jetty :refer [run-jetty]]
-                   [cheshire.core :refer [generate-string parse-string]]
-                   [xtdb.client :as xtc]
-                   [xtdb.api :as xt]))
+                   [ring.middleware.defaults :refer [api-defaults
+                                                     wrap-defaults]]
+                   [xtdb.api :as xt]
+                   [xtdb.client :as xtc]))
 (defn- read-json [request]
-  (parse-string (slurp (:body request))))
+  (parse-stream (clojure.java.io/reader (:body request))))
 
 (defn make-routes [node]
   (routes (GET "/todos" [] (generate-string {:todos (xt/q node '(from :todos [*]))}))
