@@ -1,0 +1,5 @@
+services:
+  xtdb:
+    image: ghcr.io/xtdb/xtdb-standalone-ea:latest
+    ports:
+      - "6543:3000"
