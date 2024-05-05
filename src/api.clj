@@ -19,10 +19,13 @@
   (let [{:keys [title, description]} (read-json request)]
     {:title title :description description}))
 
+(defn- create-todo [node todo]
+  (xt/submit-tx node [[:put-docs :todos (assoc todo :xt/id (generate-uuid))]]))
+
 (defn make-routes [node]
   (routes (GET "/todos" [] (generate-string {:todos (xt/q node '(from :todos [*]))}))
           (POST "/todos" request (let [todo (assoc (todo-from-request request) :completed false)]
-                                   (xt/submit-tx node [[:put-docs :todos (assoc todo :xt/id (generate-uuid))]])) {})
+                                   (create-todo node todo)) {})
           (route/not-found "Not Found")))
 
 (defn make-app [node]
