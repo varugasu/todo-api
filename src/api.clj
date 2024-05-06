@@ -1,23 +1,13 @@
-(ns api  (:require [cheshire.core :refer [generate-string parse-string]]
+(ns api  (:require [api.adapters :refer [todo-from-request]]
+                   [api.utils :refer [generate-uuid]]
+                   [cheshire.core :refer [generate-string]]
                    [clojure.java.io]
                    [compojure.core :refer  [GET POST routes]]
                    [compojure.route :as route]
                    [ring.adapter.jetty :refer [run-jetty]]
-                   [ring.middleware.defaults :refer [api-defaults
-                                                     wrap-defaults]]
+                   [ring.middleware.defaults :refer [api-defaults wrap-defaults]]
                    [xtdb.api :as xt]
                    [xtdb.client :as xtc]))
-
-(defn generate-uuid []
-  (str (clojure.core/random-uuid)))
-
-(defn- read-json [request]
-  (parse-string (slurp (:body request)) true))
-
-
-(defn todo-from-request [request]
-  (let [{:keys [title, description]} (read-json request)]
-    {:title title :description description}))
 
 (defn- create-todo [node todo]
   (xt/submit-tx node [[:put-docs :todos (assoc todo :xt/id (generate-uuid))]]))
