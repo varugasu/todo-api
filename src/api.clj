@@ -13,8 +13,9 @@
 
 
 (defn make-routes [node]
-  (routes (GET "/todos" [] (generate-string {:todos (xt/q node '(from :todos [*]))}))
-          (POST "/todos" request (create-todo node (todo-from-request request)))
+  (routes (GET "/todos" [] {:headers {"Content-Type" "application/json"}
+                            :body (generate-string {:todos (xt/q node '(from :todos [*]))})})
+          (POST "/todos" request (create-todo node (todo-from-request request)) {:status 201})
           (route/not-found "Not Found")))
 
 (defn make-app [node]
