@@ -1,5 +1,5 @@
 (ns api  (:require [api.adapters :refer [todo-from-request]]
-                   [api.service :refer [create-todo]]
+                   [api.service :refer [create-todo get-todo-by-id]]
                    [cheshire.core :refer [generate-string]]
                    [clojure.java.io]
                    [compojure.core :refer  [GET POST routes]]
@@ -15,6 +15,8 @@
 (defn make-routes [node]
   (routes (GET "/todos" [] {:headers {"Content-Type" "application/json"}
                             :body (generate-string {:todos (xt/q node '(from :todos [*]))})})
+          (GET  "/todos/:id" [id] {:headers {"Content-Type" "application/json"}
+                                   :body (generate-string (get-todo-by-id node id))})
           (POST "/todos" request (create-todo node (todo-from-request request)) {:status 201})
           (route/not-found "Not Found")))
 
