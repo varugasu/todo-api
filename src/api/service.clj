@@ -14,3 +14,6 @@
 
 (defn get-todos [node]
   (xt/q node '(from :todos [*])))
+
+(defn delete-todo-by-id [node id]
+  (xt/submit-tx node [[:delete-docs :todos id]]))
