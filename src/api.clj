@@ -10,13 +10,14 @@
                    [xtdb.api :as xt]
                    [xtdb.client :as xtc]))
 
-
+(defn make-response [body]
+  {:status 200
+   :headers {"Content-Type" "application/json"}
+   :body (generate-string body)})
 
 (defn make-routes [node]
-  (routes (GET "/todos" [] {:headers {"Content-Type" "application/json"}
-                            :body (generate-string {:todos (xt/q node '(from :todos [*]))})})
-          (GET  "/todos/:id" [id] {:headers {"Content-Type" "application/json"}
-                                   :body (generate-string (get-todo-by-id node id))})
+  (routes (GET "/todos" [] (make-response {:todos (xt/q node '(from :todos [*]))}))
+          (GET  "/todos/:id" [id] (make-response (get-todo-by-id node id)))
           (POST "/todos" request (create-todo node (todo-from-request request)) {:status 201})
           (route/not-found "Not Found")))
 
