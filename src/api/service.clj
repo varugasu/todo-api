@@ -11,3 +11,6 @@
   (first
    (xt/q node '(from :todos [{:xt/id $id} *])
          {:args {:id id}})))
+
+(defn get-todos [node]
+  (xt/q node '(from :todos [*])))

@@ -1,5 +1,5 @@
 (ns api  (:require [api.adapters :refer [todo-from-request]]
-                   [api.service :refer [create-todo get-todo-by-id]]
+                   [api.service :refer [create-todo get-todo-by-id get-todos]]
                    [cheshire.core :refer [generate-string]]
                    [clojure.java.io]
                    [compojure.core :refer  [GET POST routes]]
@@ -7,7 +7,6 @@
                    [ring.adapter.jetty :refer [run-jetty]]
                    [ring.middleware.defaults :refer [api-defaults
                                                      wrap-defaults]]
-                   [xtdb.api :as xt]
                    [xtdb.client :as xtc]))
 
 (defn make-response [body]
@@ -16,7 +15,7 @@
    :body (generate-string body)})
 
 (defn make-routes [node]
-  (routes (GET "/todos" [] (make-response {:todos (xt/q node '(from :todos [*]))}))
+  (routes (GET "/todos" [] (make-response {:todos (get-todos node)}))
           (GET  "/todos/:id" [id] (make-response (get-todo-by-id node id)))
           (POST "/todos" request (create-todo node (todo-from-request request)) {:status 201})
           (route/not-found "Not Found")))
