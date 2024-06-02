@@ -6,3 +6,6 @@
 
 (defn read-json [request]
   (parse-string (slurp (:body request)) true))
+
+(defn remove-nil-values [m]
+  (into {} (filter (comp some? val) m)))

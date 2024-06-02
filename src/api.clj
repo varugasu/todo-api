@@ -1,9 +1,9 @@
 (ns api  (:require [api.adapters :refer [todo-from-request]]
-                   [api.service :refer [create-todo delete-todo-by-id get-todo-by-id
-                                        get-todos]]
+                   [api.service :refer [create-todo delete-todo-by-id
+                                        get-todo-by-id get-todos update-todo]]
                    [cheshire.core :refer [generate-string]]
                    [clojure.java.io]
-                   [compojure.core :refer  [DELETE GET POST routes]]
+                   [compojure.core :refer  [DELETE GET PATCH POST routes]]
                    [compojure.route :as route]
                    [ring.adapter.jetty :refer [run-jetty]]
                    [ring.middleware.defaults :refer [api-defaults
@@ -20,6 +20,7 @@
           (GET  "/todos/:id" [id] (make-response (get-todo-by-id node id)))
           (POST "/todos" request (create-todo node (todo-from-request request)) {:status 201})
           (DELETE "/todos/:id" [id] (delete-todo-by-id node id) {:status 204})
+          (PATCH  "/todos/:id" [id :as request] (make-response (update-todo node id (todo-from-request request))))
           (route/not-found "Not Found")))
 
 (defn make-app [node]
@@ -30,3 +31,4 @@
 (defn -main []
   (with-open [node (xtc/start-client "http://localhost:6543")]
     (run-jetty (make-app node) jetty-opts)))
+-

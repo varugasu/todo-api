@@ -1,5 +1,5 @@
 (ns api.service
-  (:require [api.utils :refer [generate-uuid]]
+  (:require [api.utils :refer [generate-uuid remove-nil-values]]
             [xtdb.api :as xt]))
 
 
@@ -17,3 +17,9 @@
 
 (defn delete-todo-by-id [node id]
   (xt/submit-tx node [[:delete-docs :todos id]]))
+
+(defn update-todo [node id todo]
+  (xt/submit-tx node [[:update {:table :todos,
+                                :bind [{:xt/id id}],
+                                :set (remove-nil-values todo)}]])
+  (get-todo-by-id node id))
